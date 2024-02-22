@@ -1,29 +1,29 @@
 const express = require("express");
-const app = express();
+const app = express(); // Setup Express
 
-app.use((req, res, next) => {
+app.use((req, res, next) => { // Middleware Set Headers
     res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
     res.setHeader("Access-Control-Allow-Headers", "Content-type,Authorization");
     next();
 });
 
-const jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken"); // Imports
 const { expressjwt: expressJwt } = require('express-jwt');
 const bodyParser = require("body-parser");
 const path = require("path");
 
-app.use(bodyParser.json());
+app.use(bodyParser.json()); // Parse Requests
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const PORT = 3000;
 const secretKey = "1234567890";
 
-const jwtMW = expressJwt({
+const jwtMW = expressJwt({ // Middleware Encryption
     secret: secretKey,
     algorithms: ["HS256"]
 });
 
-let users = [
+let users = [ // User Data
     {
         id: 1, username: "andre", password: "123"
     },
@@ -32,7 +32,7 @@ let users = [
     },
 ];
 
-app.post("/api/login", (req, res) => {
+app.post("/api/login", (req, res) => { // Login Route (Authentication)
     const { username, password } = req.body;
     
     for (let user of users) {
@@ -55,18 +55,18 @@ app.post("/api/login", (req, res) => {
     }
 });
 
-app.get("/api/dashboard", jwtMW, (req, res) => {
+app.get("/api/dashboard", jwtMW, (req, res) => { // Dashboard Route
     res.json({
         success: true,
         myContent: "Secret content."
     });
 });
 
-app.get("/", (req, res) => {
+app.get("/", (req, res) => { // Home Route
     res.sendFile(path.join(__dirname, "index.html"))
 });
 
-app.use(function(err, req, res, next) {
+app.use(function(err, req, res, next) { // Authorization
     if(err.name === "UnauthorizedError") {
         res.status(401).json({
             success: false,
