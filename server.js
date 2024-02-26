@@ -65,7 +65,7 @@ app.get("/api/dashboard", jwtMW, (req, res) => { // Dashboard Route
 app.get("/api/settings", jwtMW, (req, res) => { // Settings Route
     res.json({
         success: true,
-        settingContent: "Setting content."
+        settingContent: "Secret Setting content."
     });
 });
 
