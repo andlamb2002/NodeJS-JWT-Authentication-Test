@@ -62,6 +62,13 @@ app.get("/api/dashboard", jwtMW, (req, res) => { // Dashboard Route
     });
 });
 
+app.get("/api/settings", jwtMW, (req, res) => { // Settings Route
+    res.json({
+        success: true,
+        settingContent: "Setting content."
+    });
+});
+
 app.get("/", (req, res) => { // Home Route
     res.sendFile(path.join(__dirname, "index.html"))
 });
