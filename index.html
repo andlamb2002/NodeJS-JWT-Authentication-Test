@@ -68,6 +68,7 @@
                 if(res && res.data && res.data.success) {
                     document.querySelector('h1.row').innerHTML = "Dashboard";
                     document.querySelector('main').innerHTML = res.data.myContent;
+                    updateURL("/dashboard");
                 }
             });
         }
@@ -83,8 +84,15 @@
                 if(res && res.data && res.data.success) {
                     document.querySelector('h1.row').innerHTML = "Settings";
                     document.querySelector('main').innerHTML = res.data.settingContent;
+                    updateURL("/settings");
                 }
             });
+        }
+
+        function updateURL(route) {
+            const stateObject = { route: route };
+            const newURL = route; // The new URL corresponding to the route
+            history.pushState(stateObject, "", newURL);
         }
 
     </script>
