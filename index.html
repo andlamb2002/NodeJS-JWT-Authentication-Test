@@ -72,7 +72,7 @@
             });
         }
 
-        function getSettings() {
+        function getSettings() { // Additional settings route requiring authorization
             const token = localStorage.getItem("jwt");
 
             axios.get('/api/settings', {
@@ -88,18 +88,18 @@
             });
         }
 
-        function updateURL(route) {
+        function updateURL(route) { // Update URL without a page refresh
             const stateObject = { route: route };
             const newURL = route; 
             history.pushState(stateObject, "", newURL);
         }
 
-        function handleExpiredToken() {
+        function handleExpiredToken() { // Removes jwt token and redirects to home
             localStorage.removeItem("jwt");
             window.location.href = "/";
         }
 
-        function checkTokenExpiration() {
+        function checkTokenExpiration() { // Parses token and checks for expiration
             const token = localStorage.getItem("jwt");
 
             if (token) {
@@ -117,10 +117,10 @@
             }
             }
         }
-        
-        setInterval(checkTokenExpiration, 1000);
 
-        function parseJWT(token) {
+        setInterval(checkTokenExpiration, 1000); // Check expiration every second
+
+        function parseJWT(token) { // Parses JWT token to JSON
             let base64Url = token.split('.')[1];
             let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
             let jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
