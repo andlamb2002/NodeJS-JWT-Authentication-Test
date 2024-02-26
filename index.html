@@ -33,7 +33,7 @@
 
         </main>
 
-    </div>
+    </div> 
 
     <script>
 
@@ -49,10 +49,9 @@
                 document.getElementById('username').value = '';
                 document.getElementById('password').value = '';
                 if(res && res.data && res.data.token) {
-                    const token = res.data.token;
+                    let token = res.data.token;
                     localStorage.setItem("jwt", token);
                     token = res.data.token;
-                    getDashboard();
                 }
             })
         }
@@ -91,8 +90,44 @@
 
         function updateURL(route) {
             const stateObject = { route: route };
-            const newURL = route; // The new URL corresponding to the route
+            const newURL = route; 
             history.pushState(stateObject, "", newURL);
+        }
+
+        function handleExpiredToken() {
+            localStorage.removeItem("jwt");
+            window.location.href = "/";
+        }
+
+        function checkTokenExpiration() {
+            const token = localStorage.getItem("jwt");
+
+            if (token) {
+            try {
+                const decodedToken = parseJWT(token);
+                const currentTime = Math.floor(Date.now() / 1000); 
+                const expirationTime = decodedToken.exp; 
+                const remainingTime = expirationTime - currentTime; 
+                if (remainingTime <= 0) {
+                handleExpiredToken(); 
+                }   
+            } catch (error) {
+                console.error("Error decoding token:", error);
+                handleExpiredToken(); 
+            }
+            }
+        }
+
+        // Call the function to start checking token existence and expiration
+        setInterval(checkTokenExpiration, 1000);
+
+        function parseJWT(token) {
+            let base64Url = token.split('.')[1];
+            let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            let jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            return JSON.parse(jsonPayload);
         }
 
     </script>

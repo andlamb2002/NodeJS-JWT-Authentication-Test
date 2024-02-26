@@ -34,10 +34,14 @@ let users = [ // User Data
 
 app.post("/api/login", (req, res) => { // Login Route (Authentication)
     const { username, password } = req.body;
+
+    let userFound = false; 
     
     for (let user of users) {
         if (user.username === username && user.password === password) {
-            let token = jwt.sign({id: user.id, username: user.username, password: user.password}, secretKey, { expiresIn: "7d" });
+            userFound = true; 
+            let token = jwt.sign({id: user.id, username: user.username, password: user.password}, secretKey, { expiresIn: "3m" });
+
                 res.json({
                     success: true,
                     err: null,
@@ -45,13 +49,13 @@ app.post("/api/login", (req, res) => { // Login Route (Authentication)
                 });
             break;
         }
-        else {
-            res.status(401).json({
-                success: false,
-                token: null,
-                err: "Username or password is incorrect"
-            });
-        }
+    }
+    if (!userFound) {
+        res.status(401).json({
+            success: false,
+            token: null,
+            err: "Username or password is incorrect"
+        });
     }
 });
 
